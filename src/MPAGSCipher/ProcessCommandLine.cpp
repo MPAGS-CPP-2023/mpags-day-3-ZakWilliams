@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 
+//bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
+//                        bool& helpRequested, bool& versionRequested,
+//                        std::string& inputFile, std::string& outputFile,
+//                        std::string& cipherKey, bool& encrypt)
 bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
-                        bool& helpRequested, bool& versionRequested,
-                        std::string& inputFile, std::string& outputFile,
-                        std::string& cipherKey, bool& encrypt)
+                        ProgramSettings& cmd_line)
 {
     // Status flag to indicate whether or not the parsing was successful
     bool processStatus{true};
@@ -18,11 +20,11 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
     for (std::size_t i{1}; i < nCmdLineArgs; ++i) {
         if (cmdLineArgs[i] == "-h" || cmdLineArgs[i] == "--help") {
             // Set the indicator and terminate the loop
-            helpRequested = true;
+            cmd_line.helpRequested = true;
             break;
         } else if (cmdLineArgs[i] == "--version") {
             // Set the indicator and terminate the loop
-            versionRequested = true;
+            cmd_line.versionRequested = true;
             break;
         } else if (cmdLineArgs[i] == "-i") {
             // Handle input file option
@@ -35,7 +37,7 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
                 break;
             } else {
                 // Got filename, so assign value and advance past it
-                inputFile = cmdLineArgs[i + 1];
+                cmd_line.inputFile = cmdLineArgs[i + 1];
                 ++i;
             }
         } else if (cmdLineArgs[i] == "-o") {
@@ -49,7 +51,7 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
                 break;
             } else {
                 // Got filename, so assign value and advance past it
-                outputFile = cmdLineArgs[i + 1];
+                cmd_line.outputFile = cmdLineArgs[i + 1];
                 ++i;
             }
         } else if (cmdLineArgs[i] == "-k") {
@@ -63,13 +65,13 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
                 break;
             } else {
                 // Got the key, so assign the value and advance past it
-                cipherKey = cmdLineArgs[i + 1];
+                cmd_line.cipherKey = cmdLineArgs[i + 1];
                 ++i;
             }
         } else if (cmdLineArgs[i] == "--encrypt") {
-            encrypt = true;
+            cmd_line.encrypt = true;
         } else if (cmdLineArgs[i] == "--decrypt") {
-            encrypt = false;
+            cmd_line.encrypt = false;
         } else {
             // Have encoutered an unknown flag, output an error message,
             // set the flag to indicate the error and terminate the loop
@@ -81,3 +83,4 @@ bool processCommandLine(const std::vector<std::string>& cmdLineArgs,
     }
     return processStatus;
 }
+
